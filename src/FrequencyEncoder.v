@@ -21,4 +21,5 @@ module FrequencyEncoder (
             pulse_output <= 1'b0;
         end
     end
+    
 endmodule
