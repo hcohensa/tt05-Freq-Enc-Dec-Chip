@@ -22,6 +22,53 @@ module tt_um_seven_segment_seconds #( parameter MAX_COUNT = 24'd10_000_000 ) (
     // put bottom 8 bits of second counter out on the bidirectional gpio
     assign uio_out = second_counter[7:0];
 
+
+
+
+module TopModule (
+    input wire data_input,
+    input wire pulse_input,
+    input wire reset,
+    input wire clk_in,
+    output wire pulse_output,
+    output wire [7:0] data_output
+);
+    wire pll_clk_out;
+    wire pulse_out;
+    wire [7:0] decoded_data;
+
+    PLL pll_inst (
+        .clk_in(clk_in),
+        .pll_clk_out(pll_clk_out)
+    );
+
+    FrequencyEncoder encoder_inst (
+        .data_input(data_input),
+        .enable(pll_clk_out), // Enable based on PLL output
+        .clk(clk_in),
+        .pulse_output(pulse_out)
+    );
+
+    FrequencyDecoder decoder_inst (
+        .pulse_input(pulse_input),
+        .enable(pll_clk_out), // Enable based on PLL output
+        .clk(clk_in),
+        .data_output(decoded_data)
+    );
+
+    assign pulse_output = pulse_out; // Output the encoded pulse
+    assign data_output = decoded_data; // Output the decoded data
+
+endmodule
+
+
+
+
+
+
+
+
+
     // external clock is 10MHz, so need 24 bit counter
     reg [23:0] second_counter;
     reg [3:0] digit;
