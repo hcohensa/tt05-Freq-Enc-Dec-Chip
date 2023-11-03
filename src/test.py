@@ -4,7 +4,6 @@
 # from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
 
-
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge
@@ -18,14 +17,14 @@ async def test_my_design(dut):
     cocotb.start_soon(clock.start())
 
     # Reset the design
-    dut.rst_n <= 0
+    dut.rst_n.setimmediatevalue(0)
     await RisingEdge(dut.clk)
-    dut.rst_n <= 1
+    dut.rst_n.setimmediatevalue(1)
     await RisingEdge(dut.clk)
 
     # Set the constant current and enable the design
-    dut.ui_in <= CONSTANT_CURRENT
-    dut.ena <= 1
+    dut.ui_in.setimmediatevalue(CONSTANT_CURRENT)
+    dut.ena.setimmediatevalue(1)
 
     # Define expected output and pulse count
     expected_output = 0
@@ -36,8 +35,8 @@ async def test_my_design(dut):
         await RisingEdge(dut.clk)
 
         # Detect pulses and update the count
-        if int(dut.uo_out) != expected_output:
-            expected_output = int(dut.uo_out)
+        if int(dut.uo_out.value) != expected_output:
+            expected_output = int(dut.uo_out.value)
             pulse_count += 1
 
         # Change the expected output after a certain number of cycles
@@ -49,6 +48,58 @@ async def test_my_design(dut):
         dut._log.info("Test passed: Expected behavior validated")
     else:
         dut._log.error("Test failed: Unexpected behavior")
+
+
+
+
+
+
+
+#closer, but only docs pass
+# import cocotb
+# from cocotb.clock import Clock
+# from cocotb.triggers import RisingEdge
+
+# @cocotb.test()
+# async def test_my_design(dut):
+#     CONSTANT_CURRENT = 10
+
+#     # Initialize clock
+#     clock = Clock(dut.clk, 1, units="ns")
+#     cocotb.start_soon(clock.start())
+
+#     # Reset the design
+#     dut.rst_n.setimmediatevalue(0)
+#     await RisingEdge(dut.clk)
+#     dut.rst_n.setimmediatevalue(1)
+#     await RisingEdge(dut.clk)
+
+#     # Set the constant current and enable the design
+#     dut.ui_in <= CONSTANT_CURRENT
+#     dut.ena <= 1
+
+#     # Define expected output and pulse count
+#     expected_output = 0
+#     pulse_count = 0
+
+#     # Run for a specific number of cycles
+#     for cycle in range(200):  # Adjust the number of cycles
+#         await RisingEdge(dut.clk)
+
+#         # Detect pulses and update the count
+#         if int(dut.uo_out) != expected_output:
+#             expected_output = int(dut.uo_out)
+#             pulse_count += 1
+
+#         # Change the expected output after a certain number of cycles
+#         if cycle == 150:  # Adjust the cycle count based on expected behavior
+#             expected_output = 3  # Modify this value based on the expected behavior
+
+#     # Validate the test based on the expected pulse count
+#     if pulse_count >= 3:  # Adjust the expected number of pulses based on design
+#         dut._log.info("Test passed: Expected behavior validated")
+#     else:
+#         dut._log.error("Test failed: Unexpected behavior")
 
 
 
