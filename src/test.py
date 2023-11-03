@@ -15,7 +15,6 @@ async def test_my_design(dut):
 
     clock = Clock(dut.clk, 1, units="ns")
     await clock.start()
-    # cocotb.fork(clock.start())
 
     dut.rst_n <= 0
     await RisingEdge(dut.clk)
@@ -36,14 +35,55 @@ async def test_my_design(dut):
             expected_output = int(dut.uo_out)
             pulse_count += 1
 
-        if cycle == 150:  # Adjust the cycle count based on expected behavior
-            # Change the expected_output after 150 cycles
-            expected_output = 3  # Modify this value based on the expected behavior
+        if pulse_count >= 3:  # Check for a specific number of pulses
+            dut._log.info("Test passed: Expected pulses observed")
+            break  # End the test upon receiving the expected number of pulses
 
-    if pulse_count >= 3:  # Adjust the expected number of pulses based on design
-        dut._log.info("Test passed: Expected behavior validated")
-    else:
-        dut._log.error("Test failed: Unexpected behavior")
+    if pulse_count < 3:
+        dut._log.error("Test failed: Expected pulses not observed")
+
+
+
+#Runs indefinitely
+# import cocotb
+# from cocotb.clock import Clock
+# from cocotb.triggers import RisingEdge
+
+# @cocotb.test()
+# async def test_my_design(dut):
+#     CONSTANT_CURRENT = 10
+
+#     clock = Clock(dut.clk, 1, units="ns")
+#     await clock.start()
+#     # cocotb.fork(clock.start())
+
+#     dut.rst_n <= 0
+#     await RisingEdge(dut.clk)
+#     dut.rst_n <= 1
+#     await RisingEdge(dut.clk)
+
+#     dut.ui_in <= CONSTANT_CURRENT
+#     dut.ena <= 1
+
+#     expected_output = 0
+#     pulse_count = 0
+
+#     for cycle in range(200):  # Adjust the number of cycles
+#         await RisingEdge(dut.clk)
+
+#         # Count the pulses received
+#         if int(dut.uo_out) != expected_output:
+#             expected_output = int(dut.uo_out)
+#             pulse_count += 1
+
+#         if cycle == 150:  # Adjust the cycle count based on expected behavior
+#             # Change the expected_output after 150 cycles
+#             expected_output = 3  # Modify this value based on the expected behavior
+
+#     if pulse_count >= 3:  # Adjust the expected number of pulses based on design
+#         dut._log.info("Test passed: Expected behavior validated")
+#     else:
+#         dut._log.error("Test failed: Unexpected behavior")
 
 
 
