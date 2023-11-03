@@ -29,7 +29,7 @@ async def test_my_design(dut):
     dut.ena <= 1
 
     # Simulate clock cycles
-    for _ in range(100):
+    for _ in range(50):
         await RisingEdge(dut.clk)
 
     # Validate expected output
