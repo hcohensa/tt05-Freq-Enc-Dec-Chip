@@ -4,29 +4,59 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
 
-segments = [63, 6, 91, 79, 102, 109, 125, 7, 127, 111]
+
 
 @cocotb.test()
 async def test_design(dut):
-    CONSTANT_CURRENT = 10  # Inject some current
+    CONSTANT_CURRENT = 10
 
-    dut._log.info("Starting simulation")
+    cocotb.fork(Clock(dut.clk, 1, units="ns").start())
 
-    # Initialize clock
-    clock = Clock(dut.clk, 1, units="ns")
-    cocotb.fork(clock.start())
-
-    dut.rst_n <= 0  # Active low reset
-    await RisingEdge(dut.clk)
-    dut.rst_n <= 1  # Take out of reset
+    dut.rst_n <= 0
+    await ClockCycles(dut.clk, 10)
+    dut.rst_n <= 1
 
     dut.ui_in <= CONSTANT_CURRENT
-    dut.ena <= 1  # Enable design
+    dut.ena <= 1
 
     for _ in range(100):
         await RisingEdge(dut.clk)
 
-    dut._log.info("Test done")
+    # Your additional assertions or checks go here
+    # Example: Check the uo_out signals after 100 clock cycles
+    for _ in range(8):  # Assuming uo_out is 8 bits
+        assert dut.uo_out.value.integer == expected_output  # Replace expected_output with the expected value
+        await RisingEdge(dut.clk)
+
+    # Add more checks or assertions if needed
+
+
+
+
+## First Try
+# segments = [63, 6, 91, 79, 102, 109, 125, 7, 127, 111]
+
+# @cocotb.test()
+# async def test_design(dut):
+#     CONSTANT_CURRENT = 10  # Inject some current
+
+#     dut._log.info("Starting simulation")
+
+#     # Initialize clock
+#     clock = Clock(dut.clk, 1, units="ns")
+#     cocotb.fork(clock.start())
+
+#     dut.rst_n <= 0  # Active low reset
+#     await RisingEdge(dut.clk)
+#     dut.rst_n <= 1  # Take out of reset
+
+#     dut.ui_in <= CONSTANT_CURRENT
+#     dut.ena <= 1  # Enable design
+
+#     for _ in range(100):
+#         await RisingEdge(dut.clk)
+
+#     dut._log.info("Test done")
 
 
 
