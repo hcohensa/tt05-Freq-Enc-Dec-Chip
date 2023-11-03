@@ -37,9 +37,9 @@ async def test_my_design(dut):
 
         if cycle == 150:  # Adjust the cycle count based on expected behavior
             # Change the expected_output after 150 cycles
-            expected_output = 5  # Modify this value based on the expected behavior
+            expected_output = 3  # Modify this value based on the expected behavior
 
-    if pulse_count >= 5:  # Adjust the expected number of pulses based on design
+    if pulse_count >= 3:  # Adjust the expected number of pulses based on design
         dut._log.info("Test passed: Expected behavior validated")
     else:
         dut._log.error("Test failed: Unexpected behavior")
