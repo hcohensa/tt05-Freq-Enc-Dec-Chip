@@ -14,7 +14,8 @@ async def test_my_design(dut):
     CONSTANT_CURRENT = 10
 
     clock = Clock(dut.clk, 1, units="ns")
-    cocotb.fork(clock.start())
+    await clock.start()
+    # cocotb.fork(clock.start())
 
     dut.rst_n <= 0
     await RisingEdge(dut.clk)
