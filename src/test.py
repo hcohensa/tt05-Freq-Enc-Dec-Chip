@@ -1,39 +1,77 @@
 
+# import cocotb
+# from cocotb.clock import Clock
+# from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
+
+
+# Import necessary Cocotb modules
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
+from cocotb.triggers import RisingEdge, Timer
 
-
-
+# Import any other necessary modules or classes from your design
 
 @cocotb.test()
 async def test_design(dut):
-    CONSTANT_CURRENT = 10
+    # Set your arbitrary input value
+    input_value = 42  # An example input value
 
-    cocotb.fork(Clock(dut.clk, 1, units="ns").start())
+    # Initialize the clock
+    clock = Clock(dut.clk, 10, units="ns")  # Assuming 10ns clock period
+    cocotb.fork(clock.start())
 
+    # Reset the DUT
     dut.rst_n <= 0
-    await ClockCycles(dut.clk, 10)
+    await RisingEdge(dut.clk)
     dut.rst_n <= 1
+    await RisingEdge(dut.clk)
 
-    dut.ui_in <= CONSTANT_CURRENT
+    # Apply the input value and enable the design
+    dut.ui_in <= input_value
     dut.ena <= 1
 
-    for _ in range(100):
+    # Wait for a certain number of clock cycles for processing
+    for _ in range(10):  # Adjust this value according to your design's latency
         await RisingEdge(dut.clk)
 
-    # Your additional assertions or checks go here
-    # Example: Check the uo_out signals after 100 clock cycles
-    for _ in range(8):  # Assuming uo_out is 8 bits
-        assert dut.uo_out.value.integer == expected_output  # Replace expected_output with the expected value
-        await RisingEdge(dut.clk)
+    # Get the output value from the decoder
+    output_value = dut.uo_out.value.integer
 
-    # Add more checks or assertions if needed
-
+    # Perform assertions to verify the expected output
+    # Assuming the decoder design simply passes through the input, check if output matches input
+    assert output_value == input_value, f"Expected: {input_value}, Got: {output_value}"
 
 
 
-## First Try
+## Did not work - only docs passed
+# @cocotb.test()
+# async def test_design(dut):
+#     CONSTANT_CURRENT = 10
+
+#     cocotb.fork(Clock(dut.clk, 1, units="ns").start())
+
+#     dut.rst_n <= 0
+#     await ClockCycles(dut.clk, 10)
+#     dut.rst_n <= 1
+
+#     dut.ui_in <= CONSTANT_CURRENT
+#     dut.ena <= 1
+
+#     for _ in range(100):
+#         await RisingEdge(dut.clk)
+
+#     # Your additional assertions or checks go here
+#     # Example: Check the uo_out signals after 100 clock cycles
+#     for _ in range(8):  # Assuming uo_out is 8 bits
+#         assert dut.uo_out.value.integer == expected_output  # Replace expected_output with the expected value
+#         await RisingEdge(dut.clk)
+
+#     # Add more checks or assertions if needed
+
+
+
+
+## First Try - test failed
 # segments = [63, 6, 91, 79, 102, 109, 125, 7, 127, 111]
 
 # @cocotb.test()
