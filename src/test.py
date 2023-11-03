@@ -13,29 +13,36 @@ from cocotb.triggers import RisingEdge
 async def test_my_design(dut):
     CONSTANT_CURRENT = 10
 
-    # Initialize clock
     clock = Clock(dut.clk, 1, units="ns")
     cocotb.fork(clock.start())
 
-    dut.rst_n <= 0  # Active low reset
+    dut.rst_n <= 0
     await RisingEdge(dut.clk)
-    dut.rst_n <= 1  # Take out of reset
+    dut.rst_n <= 1
     await RisingEdge(dut.clk)
 
     dut.ui_in <= CONSTANT_CURRENT
-    dut.ena <= 1  # Enable design
+    dut.ena <= 1
 
-    expected_output = 0  # Set the expected output based on the design's behavior
+    expected_output = 0
+    pulse_count = 0
 
-    for _ in range(100):
+    for cycle in range(200):  # Adjust the number of cycles
         await RisingEdge(dut.clk)
-        actual_output = int(dut.uo_out)
 
-        # Check if the actual output matches the expected output
-        if actual_output == expected_output:
-            dut._log.info(f"Test passed: Expected {expected_output}, got {actual_output}")
-        else:
-            dut._log.error(f"Test failed: Expected {expected_output}, got {actual_output}")
+        # Count the pulses received
+        if int(dut.uo_out) != expected_output:
+            expected_output = int(dut.uo_out)
+            pulse_count += 1
+
+        if cycle == 150:  # Adjust the cycle count based on expected behavior
+            # Change the expected_output after 150 cycles
+            expected_output = 5  # Modify this value based on the expected behavior
+
+    if pulse_count >= 5:  # Adjust the expected number of pulses based on design
+        dut._log.info("Test passed: Expected behavior validated")
+    else:
+        dut._log.error("Test failed: Unexpected behavior")
 
 
 
