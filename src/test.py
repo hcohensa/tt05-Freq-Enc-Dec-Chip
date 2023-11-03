@@ -4,42 +4,79 @@
 # from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
 
-# Import necessary Cocotb modules
+
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, Timer
-
-# Import any other necessary modules or classes from your design
+from cocotb.triggers import RisingEdge, FallingEdge, Timer
 
 @cocotb.test()
-async def test_design(dut):
-    # Set your arbitrary input value
-    input_value = 42  # An example input value
+async def test_my_design(dut):
+    # Constants
+    CONSTANT_CURRENT = 10
 
-    # Initialize the clock
-    clock = Clock(dut.clk, 10, units="ns")  # Assuming 10ns clock period
+    # Initialize clock
+    clock = Clock(dut.clk, 10, units="ns")  # Adjust based on your design's clock
     cocotb.fork(clock.start())
 
-    # Reset the DUT
+    # Reset
     dut.rst_n <= 0
     await RisingEdge(dut.clk)
     dut.rst_n <= 1
     await RisingEdge(dut.clk)
 
-    # Apply the input value and enable the design
-    dut.ui_in <= input_value
+    # Set inputs
+    dut.ui_in <= CONSTANT_CURRENT
     dut.ena <= 1
 
-    # Wait for a certain number of clock cycles for processing
-    for _ in range(10):  # Adjust this value according to your design's latency
+    # Simulate clock cycles
+    for _ in range(100):
         await RisingEdge(dut.clk)
 
-    # Get the output value from the decoder
-    output_value = dut.uo_out.value.integer
+    # Validate expected output
+    expected_output = 42  # Change this value based on the expected design behavior
+    assert int(dut.uo_out) == expected_output, f"Output Mismatch: Expected {expected_output}, Got {int(dut.uo_out)}"
 
-    # Perform assertions to verify the expected output
-    # Assuming the decoder design simply passes through the input, check if output matches input
-    assert output_value == input_value, f"Expected: {input_value}, Got: {output_value}"
+
+
+
+##Same as prior test
+# Import necessary Cocotb modules
+# import cocotb
+# from cocotb.clock import Clock
+# from cocotb.triggers import RisingEdge, Timer
+
+# # Import any other necessary modules or classes from your design
+
+# @cocotb.test()
+# async def test_design(dut):
+#     # Set your arbitrary input value
+#     input_value = 42  # An example input value
+
+#     # Initialize the clock
+#     clock = Clock(dut.clk, 10, units="ns")  # Assuming 10ns clock period
+#     cocotb.fork(clock.start())
+
+#     # Reset the DUT
+#     dut.rst_n <= 0
+#     await RisingEdge(dut.clk)
+#     dut.rst_n <= 1
+#     await RisingEdge(dut.clk)
+
+#     # Apply the input value and enable the design
+#     dut.ui_in <= input_value
+#     dut.ena <= 1
+
+#     # Wait for a certain number of clock cycles for processing
+#     for _ in range(10):  # Adjust this value according to your design's latency
+#         await RisingEdge(dut.clk)
+
+#     # Get the output value from the decoder
+#     output_value = dut.uo_out.value.integer
+
+#     # Perform assertions to verify the expected output
+#     # Assuming the decoder design simply passes through the input, check if output matches input
+#     assert output_value == input_value, f"Expected: {input_value}, Got: {output_value}"
+
 
 
 
