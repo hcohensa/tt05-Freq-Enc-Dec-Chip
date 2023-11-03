@@ -7,34 +7,66 @@
 
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, FallingEdge, Timer
+from cocotb.triggers import RisingEdge, Timer
 
 @cocotb.test()
 async def test_my_design(dut):
-    # Constants
     CONSTANT_CURRENT = 10
 
     # Initialize clock
-    clock = Clock(dut.clk, 10, units="ns")  # Adjust based on your design's clock
+    clock = Clock(dut.clk, 1, units="ns")
     cocotb.fork(clock.start())
 
-    # Reset
-    dut.rst_n <= 0
+    dut.rst_n <= 0  # Active low reset
     await RisingEdge(dut.clk)
-    dut.rst_n <= 1
+    dut.rst_n <= 1  # Take out of reset
     await RisingEdge(dut.clk)
 
-    # Set inputs
     dut.ui_in <= CONSTANT_CURRENT
-    dut.ena <= 1
+    dut.ena <= 1  # Enable design
 
-    # Simulate clock cycles
-    for _ in range(50):
+    for _ in range(100):  # Simulate 100 clock cycles
         await RisingEdge(dut.clk)
 
-    # Validate expected output
-    expected_output = 42  # Change this value based on the expected design behavior
-    assert int(dut.uo_out) == expected_output, f"Output Mismatch: Expected {expected_output}, Got {int(dut.uo_out)}"
+    # Set expected output to the maximum value (255 for 8-bit output)
+    expected_output = 255
+    assert int(dut.uo_out) == expected_output, f"Expected {expected_output}, but got {int(dut.uo_out)}"
+
+
+
+
+
+##Same
+# import cocotb
+# from cocotb.clock import Clock
+# from cocotb.triggers import RisingEdge, FallingEdge, Timer
+
+# @cocotb.test()
+# async def test_my_design(dut):
+#     # Constants
+#     CONSTANT_CURRENT = 10
+
+#     # Initialize clock
+#     clock = Clock(dut.clk, 10, units="ns")  # Adjust based on your design's clock
+#     cocotb.fork(clock.start())
+
+#     # Reset
+#     dut.rst_n <= 0
+#     await RisingEdge(dut.clk)
+#     dut.rst_n <= 1
+#     await RisingEdge(dut.clk)
+
+#     # Set inputs
+#     dut.ui_in <= CONSTANT_CURRENT
+#     dut.ena <= 1
+
+#     # Simulate clock cycles
+#     for _ in range(50):
+#         await RisingEdge(dut.clk)
+
+#     # Validate expected output
+#     expected_output = 42  # Change this value based on the expected design behavior
+#     assert int(dut.uo_out) == expected_output, f"Output Mismatch: Expected {expected_output}, Got {int(dut.uo_out)}"
 
 
 
