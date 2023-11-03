@@ -7,7 +7,7 @@
 
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import RisingEdge, Timer, ClockCycles
+from cocotb.triggers import RisingEdge
 
 @cocotb.test()
 async def test_my_design(dut):
@@ -15,7 +15,7 @@ async def test_my_design(dut):
 
     # Initialize clock
     clock = Clock(dut.clk, 1, units="ns")
-    cocotb.fork(clock.start())
+    cocotb.start_soon(clock.start())
 
     # Reset the design
     dut.rst_n <= 0
