@@ -1,12 +1,51 @@
+
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
 
+segments = [63, 6, 91, 79, 102, 109, 125, 7, 127, 111]
 
 @cocotb.test()
-async def test_my_design(dut):
-    dut._log.info("start")
+async def test_design(dut):
+    CONSTANT_CURRENT = 10  # Inject some current
+
+    dut._log.info("Starting simulation")
+
+    # Initialize clock
+    clock = Clock(dut.clk, 1, units="ns")
+    cocotb.fork(clock.start())
+
+    dut.rst_n <= 0  # Active low reset
+    await RisingEdge(dut.clk)
+    dut.rst_n <= 1  # Take out of reset
+
+    dut.ui_in <= CONSTANT_CURRENT
+    dut.ena <= 1  # Enable design
+
+    for _ in range(100):
+        await RisingEdge(dut.clk)
+
+    dut._log.info("Test done")
+
+
+
+
+
+
+## Passed tests!
+# import cocotb
+# from cocotb.clock import Clock
+# from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
+
+
+
+# @cocotb.test()
+# async def test_my_design(dut):
+#     dut._log.info("start")
+
+
+
 
 
 # # In class demo
@@ -18,7 +57,7 @@ async def test_my_design(dut):
 
 #     dut._log.info("starting simulation")
 
-#     #initialize clock]
+#     #initialize clock
 #     clock = Clock(dut.clk, 1, units="ns")
 #     cocotb.start_soon(clock.start())
 
