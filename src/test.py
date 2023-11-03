@@ -32,7 +32,6 @@ async def test_design(dut):
 
 
 
-
 ## Passed tests!
 # import cocotb
 # from cocotb.clock import Clock
