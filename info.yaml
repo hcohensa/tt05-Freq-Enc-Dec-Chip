@@ -49,14 +49,14 @@ documentation:
 
 # A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
   inputs:               
-    - compare bit 11
-    - compare bit 12
-    - compare bit 13
-    - compare bit 14
-    - compare bit 15
-    - compare bit 16
-    - compare bit 17
-    - compare bit 18
+    - current bit 11
+    - current bit 12
+    - current bit 13
+    - current bit 14
+    - current bit 15
+    - current bit 16
+    - current bit 17
+    - current bit 18
 # A description of what the outputs do (e.g. status LED, SPI MISO, etc)
   outputs:
     - segment a
@@ -66,7 +66,7 @@ documentation:
     - segment e
     - segment f
     - segment g
-    - dot
+    - segment h
 # A description of what the bidirectional I/O pins do (e.g. I2C SDA, I2C SCL, etc)
   bidirectional:
     - second counter bit 0
