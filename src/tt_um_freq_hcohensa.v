@@ -19,7 +19,7 @@ module tt_um_freq_hcohensa #(
 
     wire reset = ~rst_n;
 
-    wire [6:0] led_out;
+    reg [6:0] led_out;
     assign uo_out[6:0] = led_out;
     assign uo_out[7] = 1'b0;
 
