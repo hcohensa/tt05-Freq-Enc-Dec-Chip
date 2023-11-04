@@ -3,7 +3,6 @@
 `default_nettype none
 
 
-
 module tt_um_freq_hcohensa #(
     parameter MAX_COUNT = 24'd10_000_000
 ) (
@@ -18,12 +17,15 @@ module tt_um_freq_hcohensa #(
 );
 
     wire reset = ~rst_n;
+    reg [6:0] led_out;  // Change from wire to reg
 
-    reg [6:0] led_out;
     assign uo_out[6:0] = led_out;
     assign uo_out[7] = 1'b0;
 
-    assign led_out = {7'b1111111, 1'b0}; // Replace with actual logic
+    always @ (posedge clk) begin
+        // Actual logic here
+        led_out <= {7'b1111111, 1'b0}; // Replace with proper logic
+    end
 
     assign uio_oe = 8'b11111111;
 
@@ -50,14 +52,8 @@ module tt_um_freq_hcohensa #(
         .data_output(data_output)
     );
 
-    always @* begin
-        if (ena) begin
-            // Example: Blink the LEDs when 'ena' is active
-            led_out = ~led_out; // Example blinking operation
-        end
-    end
-
 endmodule
+
 
 
 
