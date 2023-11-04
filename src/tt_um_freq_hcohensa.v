@@ -2,7 +2,6 @@
 
 `default_nettype none
 
-
 module tt_um_freq_hcohensa #(
     parameter MAX_COUNT = 24'd10_000_000
 ) (
@@ -16,18 +15,23 @@ module tt_um_freq_hcohensa #(
     input wire rst_n           // reset_n - low to reset
 );
 
+    // wire reset = ! rst_n;
     wire reset = ~rst_n;
-    reg [6:0] led_out;  // Change from wire to reg
 
+    wire [6:0] led_out;
     assign uo_out[6:0] = led_out;
     assign uo_out[7] = 1'b0;
 
-    always @ (posedge clk) begin
-        // Actual logic here
-        led_out <= {7'b1111111, 1'b0}; // Replace with proper logic
-    end
+    // Ensure led_out gets a driving source
+    // Example assignment (should be replaced with actual logic)
+    assign led_out = {7'b1111111, 1'b0}; // Drive led_out with a specific pattern
 
+    // use bidirectionals as outputs
     assign uio_oe = 8'b11111111;
+
+    // put bottom 8 bits of second counter out on the bidirectional gpio
+    // assign uio_out = second_counter[7:0];
+    assign uio_out = data_output;
 
     wire pulse_output;
     wire [7:0] data_output;
@@ -38,23 +42,20 @@ module tt_um_freq_hcohensa #(
         .pll_clk_out(pll_clk_out)
     );
 
+    // Instantiate Encoder and Decoder modules with corrected port sizes
     FrequencyEncoder encoder_inst (
         .data_input(ui_in[0]), // Assuming only the LSB is used
-        .enable(ena & pll_clk_out),
+        .enable(pll_clk_out),
         .clk(clk),
         .pulse_output(pulse_output)
     );
 
     FrequencyDecoder decoder_inst (
         .pulse_input(uio_in[0]), // Assuming only the LSB is used
-        .enable(ena & pll_clk_out),
+        .enable(pll_clk_out),
         .clk(clk),
         .data_output(data_output)
     );
 
 endmodule
-
-
-
-
 
