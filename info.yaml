@@ -32,9 +32,9 @@ documentation:
   how_it_works: |
       Utilizes an array of inputs and outputs to connect to switches, 7-segment displays, and enable bidirectional paths.
 
-      The bottom 7 bits of the second counter are linked to the bidirectional output
+      The bottom 7 bits of the second counter are linked to the bidirectional output.
 
-      The clock is generated using a Phase-Locked Loop
+      The clock is generated using a Phase-Locked Loop.
 
       The Frequency Encoder encodes data input from switches to a pulse output and uses the PLL output to enable the encoding operation.
       
